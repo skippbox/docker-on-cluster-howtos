@@ -4,5 +4,6 @@ We chose to do this demonstration with the ghost blogging plateform and a Posgre
 
 #Support cloud providers
 
-Exoscale [exoscale/swarm_install.md]
-Google cloud engine [gcloud/swarm_install.md]
++ [Exoscale]|(exoscale/swarm_install.md)
++ [Google cloud engine]|(gcloud/swarm_install.md)
+ 
