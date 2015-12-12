@@ -40,7 +40,7 @@ Start a consul master node with:
     -p 8400:8400  \
     -p 8500:8500  \
     -p 53:8600/udp  \
-    -d gliderlabs/consul-server -server -bootstrap -ui-dir /ui
+    -d progrium/consul -server -bootstrap -ui-dir /ui
 
 Finally create the swarm security group and add a firewall rule to allow our swarm nodes (which will be created in the swarm security group) to communicate with the consul server on the port tcp/8500 and udp/53.
     

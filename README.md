@@ -1,1 +1,1 @@
-This project is a collection of documents and recipes showcasing how to install a typical web app infrastructure on a swarm cluster or a kubernetes cluster.
+This project is a collection of documents and recipes showcasing how to install a typical web app infrastructure on a swarm cluster or a kubernetes cluster on different cloud providers (Exoscale, google cloud engine, more to come ...)
