@@ -77,7 +77,7 @@ To connect to the master via ssh use:
     
     $ docker-machine ssh swarm-master
 
-Administrate the cluster using docker-machine with: (note the --swarm`):
+Administrate the cluster using docker-machine with: (note the `--swarm`):
 
     $ eval $(docker-machine env --swarm swarm-master)
 
@@ -96,25 +96,26 @@ Administrate the cluster using docker-machine with: (note the --swarm`):
         --engine-opt="cluster-advertise=eth0:2376" \
         swarm-node-1
 
-Of course you can create as many nodes as needed.
+Of course you can create as many nodes as needed. Just increments the digit in their name.
 
 More driver options are available: [https://docs.docker.com/machine/drivers/exoscale/].
 
 Change the machine-type according to your needs / budget.
 
-You can then test the nodes instances by connection to them with:
+You can then test the nodes instances by connecting to it via ssh with:
 
     $ docker-machine ssh swarm-node-1
 
 Or from the swarm master list the machine registered on consul:
-
+    
+    $ eval $(docker-machine env --swarm swarm-master)
     $ docker run swarm list consul://$(docker-machine ip consul):8500
 
 ###Service discovery
 
-We now have a setup where each node informations are stored in consul, so they can form a cluster. But once we run our containers in this cluster where can they get informations about other containers ? 
-Since we already have a good place suited to store host informations, why not using it to also store containers informations ?
-To achieve this we are going to use the registrator image from the excellent gliderlabs repo. Note the usage of the constraint environnement variable when starting registrator; as we need one registrator running per node of the cluster we need to start this container on each of them using constraint. 
+We now have a setup where each node informations are stored in consul, so they can form a cluster. But once we run our containers in this cluster where can one of them get informations about other containers ? 
+Since we already have a place suited to store host informations, why not using it to also store informations about the services our containers are running ?
+To achieve this we are going to use the registrator image from the excellent gliderlabs repo. Note the usage of the constraint environnement variable when starting registrator; as we need one registrator running per node of the cluster we need to start this container on each of them. 
 
 for the swarm-master
 
