@@ -127,7 +127,7 @@ for the swarm-master
         gliderlabs/registrator:latest \
         -internal consul://$(docker-machine ip consul):8500
 
-for each of the swarm node:
+for each of the swarm nodes (modify the constraint accordingly to your nodes names):
 
     $ docker run -d \
         --name=registrator \
