@@ -14,7 +14,7 @@
 ghost:
   image: ghost
   ports:
-    - "80:2368"
+    - 2368
   volumes:
     # - $PWD/blog/config.js:/var/lib/ghost/config.js
     - /home/ubuntu/config.js:/var/lib/ghost/config.js
@@ -22,7 +22,7 @@ ghost:
     - db
   environment:
     - NODE_ENV=production
-    - DB_URI=how2dock_db_1
+    - DB_URI=swarm_db_1
 
 db:
   image: postgres:9.3
@@ -32,17 +32,3 @@ db:
     DB_NAME: ghost
   ports:
     - "5432:5432"
-
-# mariadb:
-#   image: mariadb
-#   environment:
-#     MYSQL_ROOT_PASSWORD: mysqlrootpassword
-#     MYSQL_USER: admin
-#     MYSQL_PASSWORD: ghostpassword
-#     MYSQL_DATABASE: ghost
-  # volumes_from:
-  #   - mariadbdata
-  # log_driver: "syslog"
-  # log_opt:
-  #   syslog-address: "udp://localhost:5000"
-  #   syslog-tag: "mariadb"
