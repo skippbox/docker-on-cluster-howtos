@@ -21,7 +21,7 @@ Select a project > create project. From now on, we will use this project ID
 
 Docker engines need a Key-value store to store informations. This is used by the swarm master to gather informations about the nodes joining the managed cluster. We are consul for this purpose, but alternatives exists, like etcd or zookeeper.
 
-$ docker-machine create --driver google \
+    $ docker-machine create --driver google \
         --google-project  \
         --google-zone europe-west1-b \
         --google-machine-type f1-micro \
