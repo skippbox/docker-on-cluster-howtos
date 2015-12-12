@@ -27,32 +27,33 @@ Docker engines need a Key-value store to store informations. This is used by the
         --exoscale-instance-profile tiny \
         --exoscale-disk-size 10 \
         --exoscale-security-group consul \
-        consul-master
+        consul
 
-Connect to this machine:
+Administrate this instance using docker-machine with:
 
-    $ eval $(docker-machine env consul-master)
+    $ eval $(docker-machine env consul)
 
-Start a consul master node with:
+Start a consul container with:
 
-    $ docker run --name consul-master \
+    $ docker run --name consul \
     --restart=always  \
     -p 8400:8400  \
     -p 8500:8500  \
-    -p 53:8600/udp  \
+    -p 53:53/udp  \
+    -h consul \
     -d progrium/consul -server -bootstrap -ui-dir /ui
 
-Finally create the swarm security group and add a firewall rule to allow our swarm nodes (which will be created in the swarm security group) to communicate with the consul server on the port tcp/8500 and udp/53.
+Finally add security rules to allow our swarm nodes to communicate with the consul server on the port tcp/8500 (optionnaly udp/53).
     
     $ cs authorizeSecurityGroupIngress protocol=TCP startPort=8500 endPort=8500 securityGroupName=consul usersecuritygrouplist[0].account=$EXOSCALE_ACCOUNT_EMAIL usersecuritygrouplist[0].group=swarm
 
-Of course you could also authorize your public ip address to access the consul web ui with something like:
+Of course you can also authorize your public ip address to access the consul web ui with something like:
 
     $ cs authorizeSecurityGroupIngress protocol=TCP startPort=8500 endPort=8500 securityGroupName=consul cidrList=<your ip address/32>
 
-Or if you rather use dns queries:
+Or if you'd rather use dns queries:
 
-    $ cs authorizeSecurityGroupIngress protocol=UDO startPort=53 endPort=53 securityGroupName=consul cidrList=<your ip address/32>
+    $ cs authorizeSecurityGroupIngress protocol=UDP startPort=53 endPort=53 securityGroupName=consul cidrList=<your ip address/32>
 
 ###Creating the swarm master
 
@@ -67,16 +68,16 @@ We need instances on which to install swarm. Let's first create the master with:
         --exoscale-security-group swarm \
         --swarm \
         --swarm-master \
-        --swarm-discovery="consul://$(docker-machine ip consul-master):8500" \
-        --engine-opt="cluster-store=consul://$(docker-machine ip consul-master):8500" \
+        --swarm-discovery="consul://$(docker-machine ip consul):8500" \
+        --engine-opt="cluster-store=consul://$(docker-machine ip consul):8500" \
         --engine-opt="cluster-advertise=eth0:2376" \
         swarm-master
 
-To connect to the master use:
+To connect to the master via ssh use:
     
     $ docker-machine ssh swarm-master
 
-And enter our env (note the --swarm`):
+Administrate the cluster using docker-machine with: (note the --swarm`):
 
     $ eval $(docker-machine env --swarm swarm-master)
 
@@ -90,8 +91,8 @@ And enter our env (note the --swarm`):
         --exoscale-disk-size 10 \
         --exoscale-security-group swarm \
         --swarm \
-        --swarm-discovery="consul://$(docker-machine ip consul-master):8500" \
-        --engine-opt="cluster-store=consul://$(docker-machine ip consul-master):8500" \
+        --swarm-discovery="consul://$(docker-machine ip consul):8500" \
+        --engine-opt="cluster-store=consul://$(docker-machine ip consul):8500" \
         --engine-opt="cluster-advertise=eth0:2376" \
         swarm-node-1
 
@@ -107,7 +108,7 @@ You can then test the nodes instances by connection to them with:
 
 Or from the swarm master list the machine registered on consul:
 
-    $ docker run swarm list consul://$(docker-machine ip consul-master):8500
+    $ docker run swarm list consul://$(docker-machine ip consul):8500
 
 ###Service discovery
 
@@ -123,7 +124,7 @@ for the swarm-master
         --volume=/var/run/docker.sock:/tmp/docker.sock \
         -e constraint:node==swarm-master \
         gliderlabs/registrator:latest \
-        -internal consul://$(docker-machine ip consul-master):8500
+        -internal consul://$(docker-machine ip consul):8500
 
 for each of the swarm node:
 
@@ -133,17 +134,20 @@ for each of the swarm node:
         --volume=/var/run/docker.sock:/tmp/docker.sock \
         -e constraint:node==swarm-node-1 \
         gliderlabs/registrator:latest \
-        -internal consul://$(docker-machine ip consul-master):8500
+        -internal consul://$(docker-machine ip consul):8500
 
 You can then query consul to get the list of registered services using the webui or with curl (assuming port 8500 is opened):
 
-    $ curl $(docker-machine ip consul-master):8500/v1/catalog/services
+    $ curl $(docker-machine ip consul):8500/v1/catalog/services
 
 Try the registration process by running a simple webserver that return the container id:
 
     $ docker run --name web1 -p 80 -d foostan/tinyweb
 
-It also possible to use a dns query
+It also possible to use a dns query to get information about registered service using (assuming you have udp/53 open toward consul:
+
+    $ dig @$(docker-machine ip consul) tinyweb.service.consul
+    $ dig @$(docker-machine ip consul) tinyweb.service.consul SRV
 
 
 
