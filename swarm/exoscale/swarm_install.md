@@ -188,7 +188,7 @@ Try the registration process by running a simple webserver that return the conta
     $ docker run --name web1 -p 80 -d foostan/tinyweb
     $ curl $(docker-machine ip consul):8500/v1/catalog/service/tinyweb | jq .
 
-It also possible to use a dns query to get information about registered service using (assuming you have udp/53 open toward consul:
+It also possible to use a dns query to get information about registered service using (assuming you have udp/53 open toward consul):
 
     $ dig @$(docker-machine ip consul) tinyweb.service.consul
     $ dig @$(docker-machine ip consul) tinyweb.service.consul SRV
