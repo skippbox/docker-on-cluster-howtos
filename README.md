@@ -1,0 +1,1 @@
+This project is a collection of documents and recipes showcasing how to install a typical web app infrastructure on a swarm cluster or a kubernetes cluster.
