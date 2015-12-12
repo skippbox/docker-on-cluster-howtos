@@ -12,7 +12,7 @@ Then we will need to export those values in your shell:
 
     $ export EXOSCALE_ACCOUNT_EMAIL=<your exoscale mail>
     $ export CLOUDSTACK_KEY=<your exoscale api key>
-    $ export CLOUDSTACK_SECRET=<your exoscale api secret key>
+    $ export CLOUDSTACK_SECRET_KEY=<your exoscale api secret key>
     $ export CLOUDSTACK_ENDPOINT=https://api.exoscale.ch/compute
 
 ##Setting up the Swarm !
@@ -23,7 +23,7 @@ Docker engines need a Key-value store to store informations. This is used by the
 
     $ docker-machine create --driver exoscale \
         --exoscale-api-key $CLOUDSTACK_KEY \
-        --exoscale-api-secret-key $CLOUDSTACK_SECRET \
+        --exoscale-api-secret-key $CLOUDSTACK_SECRET_KEY \
         --exoscale-instance-profile tiny \
         --exoscale-disk-size 10 \
         --exoscale-security-group consul \
@@ -41,7 +41,7 @@ Start a consul container with:
     -p 8500:8500  \
     -p 53:53/udp  \
     -h consul \
-    -d progrium/consul -server -bootstrap -ui-dir /ui
+    -d progrium/consul -server -bootstrap-expect 1 -ui-dir /ui
 
 Finally add security rules to allow our swarm nodes to communicate with the consul server on the port tcp/8500 (optionnaly udp/53).
     
@@ -149,6 +149,11 @@ It also possible to use a dns query to get information about registered service 
 
     $ dig @$(docker-machine ip consul) tinyweb.service.consul
     $ dig @$(docker-machine ip consul) tinyweb.service.consul SRV
+
+Remove your test container and verify is deregistered properly:
+
+    $ docker run --name web1 -p 80 -d foostan/tinyweb
+    
 
 
 
