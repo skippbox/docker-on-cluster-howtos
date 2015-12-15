@@ -19,7 +19,7 @@ Then we will need to export those values in your shell:
 
 ###Creating a discovery service on a machine out of the cluster
 
-Docker engines need a Key-value store to store informations. This is used by the swarm master to gather informations about the nodes joining the managed cluster. We are consul for this purpose, but alternatives exists, like etcd or zookeeper.
+Docker engines need a key-value store to store informations. This is used by the swarm master to gather informations about the nodes joining the managed cluster. Thanks to hashicorp we now have [consul](https://www.consul.io/) for this purpose, but alternatives exists, like etcd or zookeeper.
 
     $ docker-machine create --driver exoscale \
         --exoscale-api-key $CLOUDSTACK_KEY \
