@@ -1,12 +1,12 @@
 #How to create a swarm cluster on Exoscale
 
-This document describes the necessary steps to create a swarm cluster on (Exoscale)|[https://exoscale.ch] cloud provider.
+This document describes the necessary steps to create a swarm cluster on (Exoscale)[https://exoscale.ch] cloud provider.
 Make sure you have Docker 1.9, Machine 0.5, and Compose 1.5 installed.
 See [http://docs.docker.com] to access the installation documentation of docker-machine for your platform.
 
 ##Setting up cs
 
-To interact with Exoscale cloudstack API we will need to use the (cs)|[https://github.com/exoscale/cs] command line tool.
+To interact with Exoscale cloudstack API we will need to use the (cs)[https://github.com/exoscale/cs] command line tool.
 You will need to get your api keys from you Exoscale account (accessible from the exoscale dashboard in Account > Api Keys).
 Then we will need to export those values in your shell:
 
@@ -98,7 +98,7 @@ Administrate the cluster using docker-machine with: (note the `--swarm`):
 
 Of course you can create as many nodes as needed, simply increments the digit in their name.
 
-More driver options are available: [https://docs.docker.com/machine/drivers/exoscale/].
+More driver options are available: https://docs.docker.com/machine/drivers/exoscale/.
 
 Change the machine-type according to your needs / budget.
 
