@@ -1,6 +1,6 @@
 #How to create a swarm cluster on GCE (Google cloud engine)
 
-This document describes the necessary steps to create a swarm cluster on (Exoscale)|[https://exoscale.ch] cloud provider.
+This document describes the necessary steps to create a swarm cluster on (Google cloud engine)[cloud.google.com] cloud provider.
 Make sure you have Docker 1.9, Machine 0.5, and Compose 1.5 installed.
 See [http://docs.docker.com] to access the installation documentation of docker-machine for your platform.
 
@@ -72,7 +72,7 @@ Administrate the cluster using docker-machine with: (note the `--swarm`):
 
     $ eval $(docker-machine env --swarm swarm-master)
 
-Here I got an issue, the machine swarm port were not opened correctly on the GCE firewall, this solved the issue (See [https://github.com/docker/machine/issues/1432]):
+Here I got an issue, the machine swarm port were not opened correctly on the GCE firewall, this solved the issue (See https://github.com/docker/machine/issues/1432):
 
     $ gcloud compute firewall-rules create swarm-machines --allow tcp:3376 --source-ranges 0.0.0.0/0 --target-tags docker-machine --project $PROJECT_ID
 
