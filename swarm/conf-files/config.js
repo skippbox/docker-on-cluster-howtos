@@ -23,6 +23,7 @@ config = {
         database: {
             client: 'pg',
             connection: {
+                // host     : 'postgres.service.consul',
                 host     : process.env.DB_URI,
                 // host     : '0.0.0.0',
                 user     : 'postgres',

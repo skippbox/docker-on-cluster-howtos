@@ -1,34 +1,38 @@
 # Target infra : Haproxy > n * ghost > db 
-# additional: elk + promotheus + piwik
-# At first one overlay network > evoluating toward seggregated networks
-
-# lb:
-#   image: haproxy
-#   ports:
-#     - "80:80"
-#     - "443:443"
-#   volumes:
-#     - config
-#     - cert
-
 ghost:
   image: ghost
+  restart: always
   ports:
     - 2368
   volumes:
-    # - $PWD/blog/config.js:/var/lib/ghost/config.js
-    - /home/ubuntu/config.js:/var/lib/ghost/config.js
-  links:
-    - db
+    - /home/ubuntu/conf-files/config.js:/var/lib/ghost/config.js
   environment:
-    - NODE_ENV=production
     - DB_URI=swarm_db_1
+    - NODE_ENV=production
+  log_driver: "syslog"
+  log_opt:
+    syslog-address: "udp://185.19.29.213:5000"
+    syslog-tag: "ghost"
 
 db:
   image: postgres:9.3
+  restart: always
   environment:
     DB_PASSWORD: postgres
     DB_USER: postgres
     DB_NAME: ghost
   ports:
-    - "5432:5432"
+    - 5432
+
+lb:
+  image: lalu/haproxy-consul
+  restart: always
+  volumes:
+    - /home/ubuntu/conf-files/haproxy.ctmpl:/tmp/haproxy.ctmpl
+    - /home/ubuntu/conf-files/consule-template.conf:/tmp/consule-template.conf
+  ports:
+    - "80:80"
+    - "8001:8001"
+  command: -consul 185.19.29.213:8500
+
+

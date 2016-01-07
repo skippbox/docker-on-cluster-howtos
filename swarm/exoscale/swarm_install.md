@@ -8,7 +8,7 @@ See http://docs.docker.com to access the installation documentation of docker-ma
 
 To interact with Exoscale cloudstack API we will need to use the [cs](https://github.com/exoscale/cs) command line tool.
 You will need to get your api keys from you Exoscale account (accessible from the exoscale dashboard in Account > Api Keys).
-Then we will need to export those values in your shell:
+Then export those values in your shell:
 
     $ export EXOSCALE_ACCOUNT_EMAIL=<your exoscale mail>
     $ export CLOUDSTACK_KEY=<your exoscale api key>
@@ -41,7 +41,7 @@ Start a consul container with:
     -p 8500:8500  \
     -p 53:53/udp  \
     -h consul \
-    -d progrium/consul -server -bootstrap-expect 1 -ui-dir /ui
+    -d progrium/consul -server -bootstrap -ui-dir /ui
 
 Finally add security rules to allow our swarm nodes to communicate with the consul server on the port tcp/8500 (optionnaly udp/53).
     
@@ -71,6 +71,7 @@ We need instances on which to install swarm. Let's first create the master with:
         --swarm-discovery="consul://$(docker-machine ip consul):8500" \
         --engine-opt="cluster-store=consul://$(docker-machine ip consul):8500" \
         --engine-opt="cluster-advertise=eth0:2376" \
+        --engine-label="apps" \
         swarm-master
 
 To connect to the master via ssh use:
@@ -94,6 +95,7 @@ Administrate the cluster using docker-machine with: (note the `--swarm`):
         --swarm-discovery="consul://$(docker-machine ip consul):8500" \
         --engine-opt="cluster-store=consul://$(docker-machine ip consul):8500" \
         --engine-opt="cluster-advertise=eth0:2376" \
+        --engine-label="apps" \
         swarm-node-1
 
 Of course you can create as many nodes as needed, simply increments the digit in their name.
@@ -157,8 +159,9 @@ for the swarm-master
         --name=registrator-master \
         --restart=always \
         --volume=/var/run/docker.sock:/tmp/docker.sock \
+        -h registrator \
         -e constraint:node==swarm-master \
-        gliderlabs/registrator:latest \
+        kidibox/registrator \
         -internal consul://$(docker-machine ip consul):8500
 
 for each of the swarm nodes (modify the constraint accordingly to your nodes names):
@@ -167,8 +170,9 @@ for each of the swarm nodes (modify the constraint accordingly to your nodes nam
         --name=registrator-node-1 \
         --restart=always \
         --volume=/var/run/docker.sock:/tmp/docker.sock \
+        -h registrator \
         -e constraint:node==swarm-node-1 \
-        gliderlabs/registrator:latest \
+        kidibox/registrator \
         -internal consul://$(docker-machine ip consul):8500
 
 Check that your registrator container are running with `docker ps`, you should get something like:

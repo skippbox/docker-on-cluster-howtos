@@ -1,0 +1,37 @@
+global
+  log 185.19.29.213:5000 local0
+  log 185.19.29.213:5000 local1 notice
+  # chroot /var/lib/haproxy
+  user nobody
+  group nogroup
+
+defaults
+  log global
+  mode http
+  option httplog
+  option dontlognull
+  balance roundrobin
+  timeout connect 5000
+  timeout client 50000
+  timeout server 50000
+
+listen stats
+  bind *:8001
+  option httpclose
+  option forwardfor
+  stats enable
+  stats uri /haproxy?stats
+  stats auth admin:123123q
+  stats realm HAProxy\ Statistics
+
+frontend web-app
+  option forwardfor # add the X-Forwarded-For header
+  http-request set-header X-Forwarded-Port %[dst_port]
+  bind *:80
+  default_backend ghost
+
+backend ghost
+  option forwardfor # add the X-Forwarded-For header
+  http-request set-header X-Forwarded-Port %[dst_port]
+  balance roundrobin{{range service "ghost"}}
+  server {{.ID}} {{.Address}}:{{.Port}}{{end}}
