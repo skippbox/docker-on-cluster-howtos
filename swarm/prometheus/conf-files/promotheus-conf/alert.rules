@@ -1,0 +1,17 @@
+### alert.rules ###
+
+# Alert for any instance that is unreachable for >5 minutes.# 
+#ALERT pmx_down# 
+#  IF up == 0# 
+#  FOR 1m# 
+#  WITH {# 
+#    severity="page"# 
+#  }# 
+#  SUMMARY "Instance {{$labels.instance}} down"# 
+#  DESCRIPTION "{{$labels.instance}} of job {{$labels.job}} has been down for more than 5 minutes."# 
+#
+# check if test container if down
+ALERT lb_container_is_down
+    IF absent(container_last_seen{name="swarm_lb_1"})
+    SUMMARY "Instance {{$labels.instance}} down"
+    DESCRIPTION "{{$labels.instance}} of job {{$labels.job}} has been down for more than 10s"

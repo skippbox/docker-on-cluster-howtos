@@ -1,0 +1,30 @@
+### prometheus.yml ###
+
+global:
+  scrape_interval: 15s # By default, scrape targets every 15 seconds.
+  evaluation_interval: 15s # By default, scrape targets every 15 seconds.
+  # scrape_timeout is set to the global default (10s).
+
+  # Attach these extra labels to all time-series collected by this Prometheus instance.
+  external_labels:
+    monitor: 'infra_label'
+
+rule_files:
+  - '/etc/prometheus/alert.rules'
+
+# A scrape configuration containing exactly one endpoint to scrape:
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+
+  # Panamax
+  - job_name: 'infra'
+    scrape_interval: 5s
+
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 5s
+    scrape_timeout: 10s
+
+    target_groups:
+      - targets: ['185.19.29.237:8888','185.19.30.136:8888']
+        labels:
+          group: 'swarm'
