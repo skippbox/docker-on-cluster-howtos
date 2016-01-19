@@ -71,7 +71,6 @@ We need instances on which to install swarm. Let's first create the master with:
         --swarm-discovery="consul://$(docker-machine ip consul):8500" \
         --engine-opt="cluster-store=consul://$(docker-machine ip consul):8500" \
         --engine-opt="cluster-advertise=eth0:2376" \
-        --engine-label="apps" \
         swarm-master
 
 To connect to the master via ssh use:
@@ -95,7 +94,6 @@ Administrate the cluster using docker-machine with: (note the `--swarm`):
         --swarm-discovery="consul://$(docker-machine ip consul):8500" \
         --engine-opt="cluster-store=consul://$(docker-machine ip consul):8500" \
         --engine-opt="cluster-advertise=eth0:2376" \
-        --engine-label="apps" \
         swarm-node-1
 
 Of course you can create as many nodes as needed, simply increments the digit in their name.
