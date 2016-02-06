@@ -69,3 +69,7 @@ On our first node:
       --volume=/var/lib/docker/:/var/lib/docker:ro \
       -e constraint:node==swarm-node-1 \
       google/cadvisor:latest
+
+##Open security group for a new admin ip address
+
+    $ ./networking.sh <my-ip>

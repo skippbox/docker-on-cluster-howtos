@@ -39,7 +39,6 @@ Start a consul container with:
     --restart=always  \
     -p 8400:8400  \
     -p 8500:8500  \
-    -p 53:53/udp  \
     -h consul \
     -d progrium/consul -server -bootstrap -ui-dir /ui
 

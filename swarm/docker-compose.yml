@@ -1,38 +1,56 @@
 # Target infra : Haproxy > n * ghost > db 
-ghost:
-  image: ghost
-  restart: always
-  ports:
-    - 2368
-  volumes:
-    - /home/ubuntu/conf-files/config.js:/var/lib/ghost/config.js
-  environment:
-    - DB_URI=swarm_db_1
-    - NODE_ENV=production
-  log_driver: "syslog"
-  log_opt:
-    syslog-address: "udp://185.19.29.213:5000"
-    syslog-tag: "ghost"
+version: '2'
 
-db:
-  image: postgres:9.3
-  restart: always
-  environment:
-    DB_PASSWORD: postgres
-    DB_USER: postgres
-    DB_NAME: ghost
-  ports:
-    - 5432
+services:
+  ghost:
+    image: ghost
+    restart: always
+    ports:
+      - 2368
+    volumes:
+      - /home/ubuntu/conf-files/config.js:/var/lib/ghost/config.js
+    environment:
+      - DB_URI=swarm_db_1
+      - NODE_ENV=production
+      - "constraint:type==node"
+    depends_on:
+      - db
+    # logging:
+    #   driver: "syslog"
+    #   options:
+    #     syslog-address: "udp://185.19.28.210:5000"
+    #     syslog-tag: "ghost"
+    mem_limit: 500000000
 
-lb:
-  image: lalu/haproxy-consul
-  restart: always
-  volumes:
-    - /home/ubuntu/conf-files/haproxy.ctmpl:/tmp/haproxy.ctmpl
-    - /home/ubuntu/conf-files/consule-template.conf:/tmp/consule-template.conf
-  ports:
-    - "80:80"
-    - "8001:8001"
-  command: -consul 185.19.29.213:8500
+  db:
+    image: postgres:9.3
+    restart: always
+    environment:
+      - "DB_PASSWORD: postgres"
+      - "DB_USER: postgres"
+      - "DB_NAME: ghost"
+      - "constraint:type==node"
+    ports:
+      - 5432
+    mem_limit: 500000000
 
+  lb:
+    image: lalu/haproxy-consul
+    restart: always
+    volumes:
+      - /home/ubuntu/conf-files/haproxy.ctmpl:/tmp/haproxy.ctmpl
+      - /home/ubuntu/conf-files/consule-template.conf:/tmp/consule-template.conf
+    ports:
+      - "80:80"
+      - "8001:8001"
+    environment:
+      - "constraint:type==master"
+    depends_on:
+      - db
+      - ghost
+    command: -consul 185.19.28.210:8500
+
+networks:
+  default:
+    driver: overlay
 
