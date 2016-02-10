@@ -47,17 +47,17 @@ function create_hatchery() {
         google/cadvisor:latest &> /dev/null
     printf "%s\n" "${blue}Cadvisor launched${normal}"
 
-    printf "%s\n" "${green}Running registrator to communicate containers states to the overlord service discovery${normal}"
-    docker $(docker-machine config $1) run -d \
-        --name=registrator-$1 \
-        --restart=always \
-        --volume=/var/run/docker.sock:/tmp/docker.sock \
-        -h registrator \
-        kidibox/registrator \
-        -internal consul://$(docker-machine ip overlord):8500 &> /dev/null
-    printf "%s\n" "${blue}Registrator launched${normal}"
+    # printf "%s\n" "${green}Running registrator to communicate containers states to the overlord service discovery${normal}"
+    # docker $(docker-machine config $1) run -d \
+    #     --name=registrator-$1 \
+    #     --restart=always \
+    #     --volume=/var/run/docker.sock:/tmp/docker.sock \
+    #     -h registrator \
+    #     kidibox/registrator \
+    #     -internal consul://$(docker-machine ip overlord):8500 &> /dev/null
+    # printf "%s\n" "${blue}Registrator launched${normal}"
 
-    docker-machine scp -r ../conf-files/ $1: &> /dev/null
+    docker-machine scp -r ../apps/webapp/conf-files/ $1: &> /dev/null
 
     # printf "%s\n" "${green}Updating kernel and rebooting${normal}"
     # docker-machine ssh $1 "sudo apt-get update &> /dev/null && sudo echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections && sudo apt-get install -y linux-image-4.2.0-25-generic linux-image-extra-4.2.0-25-generic && sudo reboot"
@@ -70,8 +70,6 @@ for i in $(seq 1 "$N_WORKERS"); do
     hatch_name="swarm-hatch-$i"
     create_hatchery "$hatch_name" 
 done
-
-#wait for reboot
 
 # sleep 15
 

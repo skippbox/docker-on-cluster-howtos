@@ -24,7 +24,8 @@ docker $(docker-machine config overlord) run --name consul \
     -h consul \
     -d progrium/consul -server -bootstrap -ui-dir /ui
 
-docker-machine scp -r ../elk/conf-files/ $(docker-machine config overlord):
+docker-machine scp -r ../apps/elk/conf-files/ $(docker-machine config overlord):
+docker-machine scp -r ../apps/prometheus/conf-files/ $(docker-machine config overlord):
 
 # docker $(docker-machine config overlord) run --name consul \
 #     --restart=always  \

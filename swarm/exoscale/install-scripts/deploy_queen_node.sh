@@ -43,15 +43,15 @@ docker $(docker-machine config swarm-queen-primary) run -d \
       google/cadvisor:latest &> /dev/null
 printf "%s\n" "${blue}Cadvisor online${normal}"
 
-printf "%s\n" "${green}Running registrator to communicate containers states to the overlord service discovery${normal}"
-docker $(docker-machine config swarm-queen-primary) run -d \
-    --name=registrator-queen-primary \
-    --restart=always \
-    --volume=/var/run/docker.sock:/tmp/docker.sock \
-    -h registrator \
-    kidibox/registrator \
-    -internal consul://$(docker-machine ip overlord):8500 &> /dev/null
-printf "%s\n" "${blue}Registrator launched${normal}"
+# printf "%s\n" "${green}Running registrator to communicate containers states to the overlord service discovery${normal}"
+# docker $(docker-machine config swarm-queen-primary) run -d \
+#     --name=registrator-queen-primary \
+#     --restart=always \
+#     --volume=/var/run/docker.sock:/tmp/docker.sock \
+#     -h registrator \
+#     kidibox/registrator \
+#     -internal consul://$(docker-machine ip overlord):8500 &> /dev/null
+# printf "%s\n" "${blue}Registrator launched${normal}"
 
 # # Let's run the consul that will act the dns server and kv store inside our overlay network
 # printf "%s\n" "${green}Running consul as overlay network service registry and dns server${normal}"

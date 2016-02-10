@@ -1,0 +1,29 @@
+version: '2'
+
+services:
+  redis-master:
+    image: redis
+    ports:
+      - "6379"
+  redis-slave:
+    image: gcr.io/google_samples/gb-redisslave:v1
+    ports:
+      - "6379"
+    environment:
+      - GET_HOSTS_FROM=dns
+    # links:
+    #   - redis-master
+  guestbook:
+    image: gcr.io/google_samples/gb-frontend:v3 
+    environment:
+      - GET_HOSTS_FROM=dns
+    ports:
+      - "80:80"
+
+# networks:
+#   default:
+#     # Use the overlay driver for multi-host communication
+#     driver: bridge
+
+
+

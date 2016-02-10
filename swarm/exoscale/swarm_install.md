@@ -63,7 +63,6 @@ We need instances on which to install swarm. Let's first create the master with:
         --exoscale-api-secret-key $CLOUDSTACK_SECRET_KEY \
         --exoscale-instance-profile small \
         --exoscale-disk-size 10 \
-        --exoscale-image ubuntu-14.04 \
         --exoscale-security-group swarm \
         --swarm \
         --swarm-master \
@@ -86,7 +85,6 @@ Administrate the cluster using docker-machine with: (note the `--swarm`):
         --exoscale-api-key $CLOUDSTACK_KEY \
         --exoscale-api-secret-key $CLOUDSTACK_SECRET_KEY \
         --exoscale-instance-profile small \
-        --exoscale-image ubuntu-14.04 \
         --exoscale-disk-size 10 \
         --exoscale-security-group swarm \
         --swarm \

@@ -1,0 +1,18 @@
+redis-master:
+  image: redis
+  ports:
+    - "6379:6379"
+# redis-slave:
+#   image: gcr.io/google_samples/gb-redisslave:v1
+#   ports:
+#     - 6379
+#   environment:
+#     - GET_HOST_FROM=env
+#   links:
+#     - redis-master
+guestbook:
+  image: gcr.io/google_samples/gb-frontend:v3 
+  environment:
+    - GET_HOST_FROM=dns
+  ports:
+    - "8080:80"
